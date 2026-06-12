@@ -12,4 +12,6 @@ async function comparePassword(password: string, hashedPassword: string) {
     return bcrypt.compare(password, hashedPassword);
 }
 
-export { createHashPassword, comparePassword };
+const PasswordService = { createHashPassword, comparePassword };
+
+export default PasswordService;

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import WebToken from '../../utils/jwt.js';
 import { Jwt, JwtPayload } from '../../types/jwt.types.js';
+import TokenService from "../../services/token.service.js";
 
 
 export interface AuthRequest extends Request {
@@ -18,7 +18,7 @@ export const authenticate = (request: AuthRequest, response: Response, next: Nex
 
         const accessToken = request.cookies.accessToken;
 
-        const decoded = (WebToken.verifyAccessToken(accessToken) as Jwt);
+        const decoded = (TokenService.verifyAccessToken(accessToken) as Jwt);
         request.user = decoded.payload;
 
         setNoCacheHeaders(response);

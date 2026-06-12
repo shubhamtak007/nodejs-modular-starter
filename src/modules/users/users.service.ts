@@ -1,7 +1,7 @@
 import prisma from '../../config/db.js';
 
 
-async function retrieveUserProfile(userId: string) {
+async function retrieveUserDetails(userId: string) {
     if (!userId) {
         throw new Error('User id is missing!!.')
     }
@@ -24,6 +24,6 @@ async function retrieveUserProfile(userId: string) {
     return user;
 }
 
-const UserService = { retrieveUserProfile }
+const UserService = { retrieveUserDetails }
 
 export default UserService;

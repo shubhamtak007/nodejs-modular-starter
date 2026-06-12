@@ -1,6 +1,6 @@
 import prisma from '../../config/db.js';
-import WebToken from '../../utils/jwt.js';
-import { createHashPassword, comparePassword } from '../../utils/hash-password.js';
+import TokenService from '../../services/token.service.js';
+import PasswordService from '../../services/password.service.js';
 import type { SignUpRequest, LoginRequest } from './auth.types.js';
 import type { Jwt } from '../../types/jwt.types.js';
 
@@ -11,7 +11,7 @@ async function signUp(request: SignUpRequest) {
         throw new Error('User already exist!');
     }
 
-    const hashedPassword = await createHashPassword(request.password);
+    const hashedPassword = await PasswordService.createHashPassword(request.password);
     const user = await prisma.user.create({
         data: {
             name: request.name,
@@ -37,7 +37,7 @@ async function signIn(request: LoginRequest) {
         throw new Error("Incorrect username!!");
     }
 
-    const isMatch = await comparePassword(
+    const isMatch = await PasswordService.comparePassword(
         request.password,
         foundUser.password
     );
@@ -55,7 +55,7 @@ async function refreshToken(token: string) {
         throw new Error('Refresh token is missing!');
     }
 
-    const decoded = (WebToken.verifyRefreshToken(token) as Jwt).payload;
+    const decoded = (TokenService.verifyRefreshToken(token) as Jwt).payload;
     const user = await prisma.user.findUnique({
         where: {
             id: decoded.userId,
@@ -99,8 +99,8 @@ async function manageTokens(userId: string, token: string) {
     }
 
     const tokenPayload = { userId: userId }
-    const newAccessToken = WebToken.generateAccessToken(tokenPayload);
-    const newRefreshToken = WebToken.generateRefreshToken(tokenPayload);
+    const newAccessToken = TokenService.generateAccessToken(tokenPayload);
+    const newRefreshToken = TokenService.generateRefreshToken(tokenPayload);
 
     await prisma.refreshToken.create({ data: { userId: userId, token: newRefreshToken } })
 

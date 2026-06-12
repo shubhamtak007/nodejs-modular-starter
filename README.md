@@ -51,18 +51,18 @@ src/
 │   │   ├── auth.validation.ts
 │   │   └── auth.middleware.ts
 │   │
-│   └── user/
-│       ├── user.controller.ts
-│       ├── user.service.ts
-│       ├── user.repository.ts
-│       ├── user.routes.ts
-│       └── user.validation.ts
+│   └── users/
+│       ├── users.controller.ts
+│       ├── users.service.ts
+│       ├── users.repository.ts
+│       ├── users.routes.ts
+│       └── users.validation.ts
 │
 ├── routes/v0
 │   └── index.ts
 │
 ├── services/
-│   ├── jwt.service.ts
+│   ├── token.service.ts
 │   └── password.service.ts
 │
 ├── utils/

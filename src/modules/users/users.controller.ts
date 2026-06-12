@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import UserService from "./user.service.js";
+import UserService from "./users.service.js";
 import { AuthRequest } from "../auth/auth.middleware.js";
 
-const profile = async (request: AuthRequest, response: Response) => {
+const userDetails = async (request: AuthRequest, response: Response) => {
     try {
         const userId = request.user?.userId;
 
@@ -13,7 +13,7 @@ const profile = async (request: AuthRequest, response: Response) => {
             });
         }
 
-        const user = await UserService.retrieveUserProfile(userId);
+        const user = await UserService.retrieveUserDetails(userId);
 
         return response.status(200).json({
             success: true,
@@ -28,4 +28,4 @@ const profile = async (request: AuthRequest, response: Response) => {
     }
 }
 
-export { profile };
+export { userDetails };
