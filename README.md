@@ -40,8 +40,6 @@ src/
 │   └── db.ts
 │
 ├── middlewares/
-│   ├── auth.middleware.ts
-│   ├── error.middleware.ts
 │   └── validation.middleware.ts
 │
 ├── modules/
@@ -50,7 +48,8 @@ src/
 │   │   ├── auth.service.ts
 │   │   ├── auth.repository.ts
 │   │   ├── auth.routes.ts
-│   │   └── auth.validation.ts
+│   │   ├── auth.validation.ts
+│   │   └── auth.middleware.ts
 │   │
 │   └── user/
 │       ├── user.controller.ts
