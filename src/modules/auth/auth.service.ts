@@ -1,35 +1,35 @@
 import prisma from '../../config/db.js';
 import TokenService from '../../services/token.service.js';
 import PasswordService from '../../services/password.service.js';
-import type { SignUpRequest, LoginRequest } from './auth.types.js';
+import type { SignUpProperties, SignInProperties } from './auth.types.js';
 import type { Jwt } from '../../types/jwt.types.js';
 
-async function signUp(request: SignUpRequest) {
-    const existingUser = await prisma.user.findUnique({ where: { email: request.email } })
+async function signUp(properties: SignUpProperties) {
+    const existingUser = await prisma.user.findUnique({ where: { email: properties.email } })
 
     if (existingUser) {
         throw new Error('User already exist!');
     }
 
-    const hashedPassword = await PasswordService.createHashPassword(request.password);
+    const hashedPassword = await PasswordService.createHashPassword(properties.password);
     const user = await prisma.user.create({
         data: {
-            name: request.name,
-            email: request.email,
+            name: properties.name,
+            email: properties.email,
             password: hashedPassword,
         },
     });
 
-    const tokens = manageTokens(user.id, request.cookies.refreshToken);
+    const tokens = manageTokens(user.id, properties.cookies.refreshToken);
     return tokens;
 };
 
-async function signIn(request: LoginRequest) {
-    if (!request.email) throw new Error('Email missing!!.');
+async function signIn(properties: SignInProperties) {
+    if (!properties.email) throw new Error('Email missing!!.');
 
     const foundUser = await prisma.user.findUnique({
         where: {
-            email: request.email,
+            email: properties.email,
         },
     });
 
@@ -38,7 +38,7 @@ async function signIn(request: LoginRequest) {
     }
 
     const isMatch = await PasswordService.comparePassword(
-        request.password,
+        properties.password,
         foundUser.password
     );
 
@@ -46,7 +46,7 @@ async function signIn(request: LoginRequest) {
         throw new Error("Incorrect password!!");
     }
 
-    const tokens = manageTokens(foundUser.id, request.cookies.refreshToken);
+    const tokens = manageTokens(foundUser.id, properties.cookies.refreshToken);
     return tokens;
 }
 
