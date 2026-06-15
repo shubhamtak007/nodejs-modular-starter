@@ -1,22 +1,27 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient as AuthPrismaClient } from "../../prisma/generated/auth/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
 import pg from "pg";
 
 const { Pool } = pg;
-const pool = new Pool({ connectionString: process.env.DATABASE_URL, });
-const adapter = new PrismaPg(pool);
-const prisma = new PrismaClient({ adapter });
 
-async function connectDB() {
+const authPool = new Pool({ connectionString: process.env.DATABASE_URL });
+const authDb = new AuthPrismaClient({ adapter: new PrismaPg(authPool) });
+
+async function connectDatabases(): Promise<void> {
     try {
-        await prisma.$connect();
-        console.log("Database connected successfully");
+        await Promise.all([authDb.$connect()]);
+        console.log("All databases connected successfully");
+
     } catch (error) {
         console.error("Database connection failed:", error);
         process.exit(1);
     }
 }
 
-connectDB();
+async function disconnectDatabases(): Promise<void> {
+    await Promise.all([
+        authDb.$disconnect()
+    ]);
+}
 
-export default prisma;
+export { authDb, connectDatabases, disconnectDatabases };
