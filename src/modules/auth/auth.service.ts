@@ -75,13 +75,13 @@ async function signOut(token: string) {
         throw new Error('Token is missing!!.');
     }
 
-    const storedToken = await authDb.refreshToken.findFirst({ where: { token: token } });
+    const storedToken = await authDb.refreshToken.findUnique({ where: { token: token } });
 
     if (!storedToken) {
         throw new Error('Invalid token!!.');
     }
 
-    await authDb.refreshToken.deleteMany({ where: { id: storedToken.id } });
+    await authDb.refreshToken.delete({ where: { id: storedToken.id } });
 
     return { message: 'Log out successfully!!' }
 };
@@ -92,9 +92,9 @@ async function manageTokens(userId: string, token: string) {
     }
 
     if (token) {
-        const storedToken = await authDb.refreshToken.findFirst({ where: { token: token } });
+        const storedToken = await authDb.refreshToken.findUnique({ where: { token: token } });
         if (storedToken) {
-            await authDb.refreshToken.deleteMany({ where: { id: storedToken.id } });
+            await authDb.refreshToken.delete({ where: { id: storedToken.id } });
         }
     }
 
