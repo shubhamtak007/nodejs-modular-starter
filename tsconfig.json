@@ -1,5 +1,7 @@
 {
     "compilerOptions": {
+        "rootDir": ".",
+        "outDir": "./dist",
         "types": [
             "node"
         ],
@@ -12,13 +14,9 @@
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
-    "include": [
-        "src",
-        "*.ts",
-        "prisma",
-    ],
-    "exclude": [
-        "node_modules",
-        "dist"
+    "includes": [
+        "src/**/*",
+        "prisma/**/*",
+        "scripts/**/*"
     ]
 }
