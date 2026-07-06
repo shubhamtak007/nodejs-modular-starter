@@ -6,7 +6,7 @@ const configs = [
 ];
 
 for (const config of configs) {
-    execSync(`prisma migrate deploy --config=${config}`, {
+    execSync(`prisma migrate dev --config=${config}`, {
         stdio: "inherit",
     });
 }
