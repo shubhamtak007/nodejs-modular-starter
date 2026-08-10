@@ -1,11 +1,11 @@
 import { execSync } from "child_process";
 
 const configs = [
-    "./prisma/prisma.config.ts"
+    "./prisma/prisma.config.ts",
 ];
 
 for (const config of configs) {
-    execSync(`prisma migrate dev --config=${config}`, {
+    execSync(`prisma migrate dev --config=${config} --create-only`, {
         stdio: "inherit",
     });
 }

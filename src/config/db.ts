@@ -1,15 +1,15 @@
-import { PrismaClient as AuthPrismaClient } from "../../prisma/generated/auth/client.js";
+import { PrismaClient } from "../../prisma/generated/client.js";
 import { PrismaPg } from "@prisma/adapter-pg";
-import pg from "pg";
 
-const { Pool } = pg;
-
-const authPool = new Pool({ connectionString: process.env.DATABASE_URL });
-const authDb = new AuthPrismaClient({ adapter: new PrismaPg(authPool) });
+const db = new PrismaClient({
+    adapter: new PrismaPg({
+        connectionString: process.env.DATABASE_URL!,
+    })
+});
 
 async function connectDatabases(): Promise<void> {
     try {
-        await Promise.all([authDb.$connect()]);
+        await Promise.all([db.$connect()]);
         console.log("All databases connected successfully");
 
     } catch (error) {
@@ -20,8 +20,8 @@ async function connectDatabases(): Promise<void> {
 
 async function disconnectDatabases(): Promise<void> {
     await Promise.all([
-        authDb.$disconnect()
+        db.$disconnect()
     ]);
 }
 
-export { authDb, connectDatabases, disconnectDatabases };
+export { db, connectDatabases, disconnectDatabases };

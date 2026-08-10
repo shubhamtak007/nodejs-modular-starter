@@ -60,17 +60,19 @@ src/
 │
 ├── services/
 │   ├── token.service.ts
-│   └── password.service.ts
+│   └── hash.service.ts
 │
 ├── app.ts
 └── server.ts
 
 prisma/
-├── schema.prisma
-└── migrations/
+├── models
+└── prisma.config.ts
+└── schema.prisma
 
 scripts/
-├── prisma-generate.ts
+├── prisma-create-migration.ts
+└── prisma-generate.ts
 └── prisma-migrate-dev.ts
 └── prisma-migrate.ts
 ```

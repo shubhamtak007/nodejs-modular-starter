@@ -1,9 +1,6 @@
 import { execSync } from "child_process";
 
-const schemas = [
-    "./prisma/auth",
-    "./prisma/user",
-];
+const schemas = ["./prisma"];
 
 for (const schema of schemas) {
     execSync(`prisma generate --schema=${schema}`, {

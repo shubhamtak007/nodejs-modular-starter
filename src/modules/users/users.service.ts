@@ -1,4 +1,4 @@
-import { authDb } from '../../config/db.js';
+import { db } from '../../config/db.js';
 
 
 async function retrieveUserDetails(userId: string) {
@@ -6,7 +6,7 @@ async function retrieveUserDetails(userId: string) {
         throw new Error('User id is missing!!.')
     }
 
-    const user = await authDb.user.findUnique({
+    const user = await db.user.findUnique({
         where: {
             id: userId,
         },

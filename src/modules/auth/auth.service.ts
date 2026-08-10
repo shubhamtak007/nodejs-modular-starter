@@ -1,18 +1,18 @@
-import { authDb } from '../../config/db.js';
+import { db } from '../../config/db.js';
 import TokenService from '../../services/token.service.js';
-import PasswordService from '../../services/password.service.js';
+import PasswordService from '../../services/hash.service.js';
 import type { SignUpProperties, SignInProperties } from './auth.types.js';
 import type { Jwt } from '../../types/jwt.types.js';
 
 async function signUp(properties: SignUpProperties) {
-    const existingUser = await authDb.user.findUnique({ where: { email: properties.email } })
+    const existingUser = await db.user.findUnique({ where: { email: properties.email } })
 
     if (existingUser) {
         throw new Error('User already exist!');
     }
 
     const hashedPassword = await PasswordService.createHashPassword(properties.password);
-    const user = await authDb.user.create({
+    const user = await db.user.create({
         data: {
             name: properties.name,
             email: properties.email,
@@ -27,7 +27,7 @@ async function signUp(properties: SignUpProperties) {
 async function signIn(properties: SignInProperties) {
     if (!properties.email) throw new Error('Email missing!!.');
 
-    const foundUser = await authDb.user.findUnique({
+    const foundUser = await db.user.findUnique({
         where: {
             email: properties.email,
         },
@@ -56,7 +56,7 @@ async function refreshToken(token: string) {
     }
 
     const decoded = (TokenService.verifyRefreshToken(token) as Jwt).payload;
-    const user = await authDb.user.findUnique({
+    const user = await db.user.findUnique({
         where: {
             id: decoded.userId,
         },
@@ -75,13 +75,13 @@ async function signOut(token: string) {
         throw new Error('Token is missing!!.');
     }
 
-    const storedToken = await authDb.refreshToken.findUnique({ where: { token: token } });
+    const storedToken = await db.refreshToken.findUnique({ where: { token: token } });
 
     if (!storedToken) {
         throw new Error('Invalid token!!.');
     }
 
-    await authDb.refreshToken.delete({ where: { id: storedToken.id } });
+    await db.refreshToken.delete({ where: { id: storedToken.id } });
 
     return { message: 'Log out successfully!!' }
 };
@@ -92,9 +92,9 @@ async function manageTokens(userId: string, token: string) {
     }
 
     if (token) {
-        const storedToken = await authDb.refreshToken.findUnique({ where: { token: token } });
+        const storedToken = await db.refreshToken.findUnique({ where: { token: token } });
         if (storedToken) {
-            await authDb.refreshToken.delete({ where: { id: storedToken.id } });
+            await db.refreshToken.delete({ where: { id: storedToken.id } });
         }
     }
 
@@ -102,7 +102,7 @@ async function manageTokens(userId: string, token: string) {
     const newAccessToken = TokenService.generateAccessToken(tokenPayload);
     const newRefreshToken = TokenService.generateRefreshToken(tokenPayload);
 
-    await authDb.refreshToken.create({ data: { userId: userId, token: newRefreshToken } })
+    await db.refreshToken.create({ data: { userId: userId, token: newRefreshToken } })
 
     return {
         accessToken: newAccessToken,

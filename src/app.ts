@@ -4,7 +4,6 @@ import { connectDatabases } from "./config/db.js";
 import cookieParser from "cookie-parser";
 import v0Routes from "./routes/v0/index.js";
 import helmet from "helmet";
-import { setupSwagger } from "./config/swagger.js";
 
 await connectDatabases();
 
@@ -36,7 +35,5 @@ app.use(helmet({
 }));
 
 app.use("/api/v0", v0Routes);
-
-setupSwagger(app);
 
 export default app;
